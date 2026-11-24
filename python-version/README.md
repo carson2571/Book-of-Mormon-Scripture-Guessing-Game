@@ -1,0 +1,1 @@
+To play the game, download the files in this directory and run 'python3 bom_guess_game.py scriptures.csv scoreboard.txt'. Your name and score will be stored to update the leaderboard. The game is played directly in terminal. The game is guessing where certain scriptures of the Book of Mormon are found.

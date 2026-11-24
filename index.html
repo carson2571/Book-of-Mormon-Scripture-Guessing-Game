@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book of Mormon Scripture Challenge</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- PapaParse reads CSV files correctly, including quoted commas-->
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+
+<body>
+    <main>
+        <h1>Book of Mormon Scripture Challenge</h1>
+        <!-- Screen 1: Enter name -->
+         <section id="start-screen">
+            <p>Guess the book and chapter of the verse. Fewer words revealed means more points.</p>
+            <input id="name-input" type="text" placeholder="Your name" maxlength="20">
+            <button id="start-btn">Start</button>
+         </section>
+
+         <!-- Screen 2: The game -->
+         <section id="game-screen" hidden>
+            <p id="round-info"></p>
+            <p id="verse"></p>
+            <select id="book-select"></select>
+            <input id="chapter-input" type="number" min="1" placeholder="Chapter (blank if only one chapter in book)">
+            <button id="guess-btn">Guess</button>
+            <p id="feedback"></p>
+            <p id="score"></p>
+         </section>
+
+         <!-- Screen 3: Results and Scoreboard -->
+          <section id="end-screen" hidden>
+            <h2>Final score: <span id="final-score"></span></h2>
+            <h3>Scoreboard</h3>
+            <ol id="scoreboard"></ol>
+            <button id="again-btn">Play again</button>
+          </section>
+    </main>
+
+    <script type="module" src="game.js"></script>
+
+</body>
+</html>
