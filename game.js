@@ -107,7 +107,7 @@ function shuffle(list) {
 
 // Shows one screen and hides the other two.
 function showScreen(id) {
-    for (const s of ["start-screen", "game-screen", "end-screen"]) {
+    for (const s of ["start-screen", "game-screen", "end-screen", "scoreboard-screen"]) {
         document.getElementById(s).hidden = (s !== id);
     }
 }
@@ -219,8 +219,8 @@ function finishVerse(message) {
 
 // entries looks like [{name: "Carson", score: 640}, {name: "Sam", score: 520}]
 // For each entry, add an <li> to #scoreboard that reads "Carson: 640".
-function renderScoreboard(entries) {
-    const board = document.getElementById("scoreboard");
+function renderScoreboard(entries, boardId = "scoreboard") {
+    const board = document.getElementById(boardId);
     board.innerHTML = "";   // clear the old list first
     for (const entry of entries) {
         const li = document.createElement("li");
@@ -230,6 +230,24 @@ function renderScoreboard(entries) {
 }
 
 //Temporary version until the scoreboard is added.
+// Opens the scoreboard on its own, without playing a game.
+async function showScoreboard() {
+    showScreen("scoreboard-screen");
+    const board = document.getElementById("scoreboard-view");
+    board.innerHTML = "<li>Loading scoreboard...</li>";
+    try {
+        const top = await getTopScores(10);
+        if (top.length === 0) {
+            board.innerHTML = "<li>No scores yet. Be the first to play!</li>";
+        } else {
+            renderScoreboard(top, "scoreboard-view");
+        }
+    } catch (err) {
+        console.error(err);
+        board.innerHTML = "<li>Couldn't reach the scoreboard. Check your connection and try again.</li>";
+    }
+}
+
 async function endGame() {
     showScreen("end-screen");
     document.getElementById("final-score").textContent = score;
@@ -267,5 +285,8 @@ document.getElementById("chapter-input").addEventListener("keydown", (e) => {
 document.getElementById("name-input").addEventListener("keydown", (e) => {
     if (e.key === "Enter") startGame();
 });
+
+document.getElementById("view-scoreboard-btn").addEventListener("click", showScoreboard);
+document.getElementById("back-btn").addEventListener("click", () => showScreen("start-screen"));
 
 loadVerses();

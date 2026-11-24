@@ -95,8 +95,8 @@ button:disabled { opacity: 0.45; cursor: default; }
 #feedback { font-weight: bold; min-height: 1.5em; }
 
 #final-score { color: var(--gold); }
-#scoreboard { padding-left: 1.5rem; }
-#scoreboard li { padding: 6px 0; border-bottom: 1px solid var(--line); }
+#scoreboard, #scoreboard-view { padding-left: 1.5rem; }
+#scoreboard li, #scoreboard-view li { padding: 6px 0; border-bottom: 1px solid var(--line); }
 
 /* Phones: use the full screen width */
 @media (max-width: 600px) {
@@ -108,3 +108,12 @@ button:disabled { opacity: 0.45; cursor: default; }
 
 /* Comfortable tap targets on touch screens */
 input, select, button { min-height: 44px; }
+
+/* Outlined button for secondary actions, like viewing the scoreboard */
+button.secondary {
+  background: transparent;
+  color: var(--accent);
+  border: 2px solid var(--accent);
+  margin-bottom: 12px;
+}
+button.secondary:hover { background: var(--accent); color: #fff; }
