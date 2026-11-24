@@ -93,6 +93,7 @@ let score = 0;
 let words = [];         // the current verse split into words
 let revealOrder = [];   // the random order words get revealed in
 let bookStage = -1;     // first guess that got the book right (-1 = none yet)
+let guessedThisVerse = [];   // guesses already made on this verse: {key, label}
 
 // --------- Helpers ---------
 // Returns a shuffled copy of a list.
@@ -135,13 +136,67 @@ function referenceText(verse) {
 }
 
 // Draws the verse with only some words visible.
+// Briefly highlights an element so players can see that it just changed.
+function flash(el) {
+    el.classList.remove("flash");
+    void el.offsetWidth;   // restart the animation
+    el.classList.add("flash");
+}
+
+// Shows a message under the buttons. warning = true styles it as a caution.
+function showFeedback(text, warning = false) {
+    const el = document.getElementById("feedback");
+    el.textContent = text;
+    el.classList.toggle("warning", warning);
+    if (text) flash(el);
+}
+
+// Lists the guesses already made on this verse, so players don't repeat themselves.
+function renderGuessedList() {
+    const list = document.getElementById("guessed-items");
+    list.innerHTML = "";
+    for (const guess of guessedThisVerse) {
+        const li = document.createElement("li");
+        li.textContent = guess.label;
+        list.appendChild(li);
+    }
+    document.getElementById("guessed-box").hidden = (guessedThisVerse.length === 0);
+}
+
+// Shows "Guess 2 of 5" and a row of dots: filled for guesses already used.
+function renderGuessCounter() {
+    const total = REVEAL_STAGES.length;
+    const dots = Array.from({ length: total }, (_, i) => (i < stage ? "●" : "○")).join(" ");
+    const label = (stage === total - 1) ? "Final guess!" : `Guess ${stage + 1} of ${total}`;
+    const el = document.getElementById("guess-counter");
+    el.textContent = `${label} · ${dots}`;
+    flash(el);
+}
+
+// Draws the verse with only some words visible. Words revealed by the latest guess are highlighted.
 function renderVerse() {
-    const shownCount = Math.ceil(words.length * REVEAL_STAGES[stage]);
-    const shown = new Set(revealOrder.slice(0, shownCount));
-    const display = words.map((w, i) => shown.has(i) ? w : maskWord(w));
-    document.getElementById("verse").textContent = display.join(" ");
-    document.getElementById("round-info").textContent = `Verse ${round + 1} of ${ROUNDS} . worth ${POINTS[stage]} points`;
+    const shownNow = new Set(revealOrder.slice(0, Math.ceil(words.length * REVEAL_STAGES[stage])));
+    const shownBefore = stage > 0
+        ? new Set(revealOrder.slice(0, Math.ceil(words.length * REVEAL_STAGES[stage - 1])))
+        : new Set();
+    const verseEl = document.getElementById("verse");
+    verseEl.innerHTML = "";
+    words.forEach((w, i) => {
+        const span = document.createElement("span");
+        span.textContent = shownNow.has(i) ? w : maskWord(w);
+        if (shownNow.has(i) && !shownBefore.has(i) && stage > 0) span.className = "new-word";
+        verseEl.appendChild(span);
+        verseEl.appendChild(document.createTextNode(" "));
+    });
+    renderGuessCounter();
+    document.getElementById("round-info").textContent =
+        `Verse ${round + 1} of ${ROUNDS} · worth ${POINTS[stage]} points`;
     document.getElementById("score").textContent = `Score: ${score}`;
+}
+
+// On phones the verse can sit above the keyboard; make sure it is on screen after each guess.
+function keepVerseInView() {
+    document.getElementById("verse").scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
 function startGame() {
@@ -161,7 +216,9 @@ function startRound() {
     revealOrder = shuffle(words.map((_, i) => i));
     stage = 0;
     bookStage = -1;
-    document.getElementById("feedback").textContent = "";
+    guessedThisVerse = [];
+    renderGuessedList();
+    showFeedback("");
     document.getElementById("chapter-input").value = "";
     document.getElementById("guess-btn").disabled = false;
     // Only auto-focus on computers; on phones it would pop up the keyboard every verse.
@@ -175,11 +232,20 @@ function handleGuess() {
     const verse = gameVerses[round];
     const book = document.getElementById("book-select").value;
     const chapterText = document.getElementById("chapter-input").value.trim();
-    const feedback = document.getElementById("feedback");
 
     // A blank chapter is the right answer for one-chapter books.
     const chapterGuess = chapterText === "" ? "" : String(Number(chapterText));
     const bookRight = (book === verse.book);
+    const guessLabel = chapterGuess === "" ? book : `${book} ${chapterGuess}`;
+
+    // Don't count (or charge a guess for) an answer that was already tried on this verse.
+    const guessKey = `${book}|${chapterGuess}`;
+    if (guessedThisVerse.some(g => g.key === guessKey)) {
+        showFeedback(`Hold on! You already guessed ${guessLabel} on this verse, so that guess wasn't counted. Try something different.`, true);
+        return;
+    }
+    guessedThisVerse.push({ key: guessKey, label: guessLabel });
+    renderGuessedList();
     const correct = bookRight && (chapterGuess === verse.chapter);
 
     // Remember the first guess that got the book right (for bonus points).
@@ -189,11 +255,14 @@ function handleGuess() {
         score += POINTS[stage];
         finishVerse(`${CORRECT_MESSAGES[stage]} You get ${POINTS[stage]} points! It's ${referenceText(verse)}.`);
     } else if (stage < REVEAL_STAGES.length - 1) {
-        feedback.textContent = bookRight
+        const reply = bookRight
             ? "Eureka! You got the book right, but the chapter is not exactly right. Keep trying!"
             : WRONG_MESSAGES[stage];
+        // Echo the guess so players can see it registered, then move to the next stage.
+        showFeedback(`Guess ${stage + 1} was ${guessLabel}. ${reply}`);
         stage++;
         renderVerse();
+        keepVerseInView();
     } else {
         let message = `Womp womp womp :( That is incorrect. The correct answer was ${referenceText(verse)}. Better luck on the next question!`;
         if (bookStage !== -1) {
@@ -208,9 +277,10 @@ function handleGuess() {
 function finishVerse(message) {
     const verse = gameVerses[round];
     document.getElementById("verse").textContent = verse.text;
-    document.getElementById("feedback").textContent = message;
+    showFeedback(message);
     document.getElementById("score").textContent = `Score: ${score}`;
     document.getElementById("guess-btn").disabled = true;
+    keepVerseInView();
 
     const nextBtn = document.getElementById("next-btn");
     nextBtn.textContent = (round === ROUNDS - 1) ? "See results" : "Next";

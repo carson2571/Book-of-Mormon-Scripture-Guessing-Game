@@ -36,6 +36,7 @@
          <!-- Screen 2: The game -->
          <section id="game-screen" hidden>
             <p id="round-info"></p>
+            <p id="guess-counter" aria-live="polite"></p>
             <p id="verse"></p>
             <div class="guess-row">
                 <select id="book-select" aria-label="Book"></select>
@@ -44,6 +45,10 @@
                 <button id="next-btn" hidden>Next</button>
             </div>
             <p id="chapter-hint">Leave the chapter blank for one-chapter books: Enos, Jarom, Omni, Words of Mormon, and 4 Nephi.</p>
+            <div id="guessed-box" hidden>
+                <strong>Already guessed on this verse:</strong>
+                <ul id="guessed-items"></ul>
+            </div>
             <p id="feedback" aria-live="polite"></p>
             <p id="score"></p>
          </section>

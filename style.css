@@ -117,3 +117,27 @@ button.secondary {
   margin-bottom: 12px;
 }
 button.secondary:hover { background: var(--accent); color: #fff; }
+
+/* Guess counter and change highlights */
+#guess-counter {
+  font-weight: bold;
+  color: var(--accent);
+  letter-spacing: 0.03em;
+  margin: 8px 0;
+}
+#guess-counter, #feedback { padding: 4px 8px; border-radius: 6px; }
+.new-word { background: #f3dd9f; border-radius: 3px; }
+.flash { animation: flash-fade 1s ease-out; }
+@keyframes flash-fade { from { background: #f3dd9f; } }
+@media (prefers-reduced-motion: reduce) { .flash { animation: none; } }
+
+/* Repeat-guess warning and the list of guesses already made */
+#feedback.warning { color: #8a2d1f; background: #fbe3dd; }
+#guessed-box { font-size: 0.95rem; margin: 6px 0 10px; }
+#guessed-items { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: 6px 0 0; }
+#guessed-items li {
+  background: #efe6d2;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 2px 10px;
+}
