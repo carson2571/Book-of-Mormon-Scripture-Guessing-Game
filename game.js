@@ -1,3 +1,5 @@
+import { saveScore, getTopScores } from "./firebase.js";
+
 // -------- Data --------
 let verses = []; //every verse ends up here as {book, chapter, text}
 
@@ -160,10 +162,32 @@ function finishVerse(message) {
     nextBtn.hidden = false;
 }
 
+// entries looks like [{name: "Carson", score: 640}, {name: "Sam", score: 520}]
+// For each entry, add an <li> to #scoreboard that reads "Carson: 640".
+function renderScoreboard(entries) {
+    const board = document.getElementById("scoreboard");
+    board.innerHTML = "";   // clear the old list first
+    for (const entry of entries) {
+        const li = document.createElement("li");
+        li.textContent = `${entry.name}: ${entry.score}`;
+        board.appendChild(li);
+    }
+}
+
 //Temporary version until the scoreboard is added.
-function endGame() {
+async function endGame() {
     showScreen("end-screen");
     document.getElementById("final-score").textContent = score;
+    const board = document.getElementById("scoreboard");
+    board.innerHTML = "<li>Loading scoreboard...</li>";
+    try {
+        await saveScore(playerName, score);
+        const top = await getTopScores(10);
+        renderScoreboard(top);
+    } catch (err) {
+        console.error(err);
+        board.innerHTML = "<li>Couldn't reach the scoreboard. Check the Console.</li>";
+    }
 }
 
 function handleNext() {
