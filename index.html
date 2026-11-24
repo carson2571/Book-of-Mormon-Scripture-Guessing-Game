@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1f4e79">
+    <meta name="description" content="A Book of Mormon guessing game: work out the book and chapter of each verse from a few revealed words, and compete on a global scoreboard.">
     <title>Book of Mormon Scripture Challenge</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="stylesheet" href="style.css">
     <!-- PapaParse reads CSV files correctly, including quoted commas-->
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -12,10 +17,18 @@
 <body>
     <main>
         <h1>Book of Mormon Scripture Challenge</h1>
+        <noscript><p>This game needs JavaScript to run. Please turn it on in your browser settings.</p></noscript>
+
         <!-- Screen 1: Enter name -->
          <section id="start-screen">
-            <p>Guess the book and chapter of the verse. Fewer words revealed means more points.</p>
-            <input id="name-input" type="text" placeholder="Your name" maxlength="20">
+            <p>Welcome to the Book of Mormon Scripture Guessing Game, created by Carson Hunter!</p>
+            <p>The goal of the game is to get as many points as possible</p>
+            <p>Ten different scriptures from the Book of Mormon will be presented, and you have five guesses to figure out what book and chapter each verse is from. Each scripture will first be presented with only a fraction of its words visible.</p>
+            <p>If you can't guess the book and chapter correctly, more of the scripture will be revealed after each guess until the entire scripture is shown for your fifth and final guess.</p>
+            <p>You'll earn 100 points for a correct answer on your first guess, then 80, 60, 40, and 20 on later guesses. If you never get the chapter but you do guess the correct book, you'll still get bonus points: 30 if you had the book on your first guess, down to 10 on your fifth. If the correct book has only one chapter, like Enos or Words of Mormon, simply leave the chapter blank.</p>
+            <p>Remember, you'll get more points if you guess the scripture on earlier guesses.</p>
+            <p>Good luck, and may the Spirit "bring all things to your remembrance" ;)</p>
+            <input id="name-input" type="text" placeholder="Your name" maxlength="20" aria-label="Your name" autocomplete="off" enterkeyhint="go">
             <button id="start-btn">Start</button>
          </section>
 
@@ -23,19 +36,24 @@
          <section id="game-screen" hidden>
             <p id="round-info"></p>
             <p id="verse"></p>
-            <select id="book-select"></select>
-            <input id="chapter-input" type="number" min="1" placeholder="Chapter (blank if only one chapter in book)">
-            <button id="guess-btn">Guess</button>
-            <button id="next-btn" hidden>Next</button>
-            <p id="feedback"></p>
+            <div class="guess-row">
+                <select id="book-select" aria-label="Book"></select>
+                <input id="chapter-input" type="number" min="1" placeholder="Chapter" aria-label="Chapter" inputmode="numeric" autocomplete="off" enterkeyhint="go">
+                <button id="guess-btn">Guess</button>
+                <button id="next-btn" hidden>Next</button>
+            </div>
+            <p id="chapter-hint">Leave the chapter blank for one-chapter books: Enos, Jarom, Omni, Words of Mormon, and 4 Nephi.</p>
+            <p id="feedback" aria-live="polite"></p>
             <p id="score"></p>
          </section>
 
          <!-- Screen 3: Results and Scoreboard -->
           <section id="end-screen" hidden>
-            <h2>Final score: <span id="final-score"></span></h2>
+            <h2>Great job! Your final score is <span id="final-score"></span>.</h2>
+            <p>Here's where you rank on the scoreboard of all players!</p>
             <h3>Scoreboard</h3>
             <ol id="scoreboard"></ol>
+            <p>Thanks for playing! Feel free to play again any time!</p>
             <button id="again-btn">Play again</button>
           </section>
     </main>

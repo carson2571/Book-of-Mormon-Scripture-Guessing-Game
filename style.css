@@ -1,0 +1,110 @@
+:root {
+  --bg: #f3ede1;
+  --card: #fffdf8;
+  --ink: #2a2622;
+  --accent: #1f4e79;
+  --accent-dark: #163a5a;
+  --gold: #b88a2e;
+  --muted: #6f675d;
+  --line: #e3d9c6;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+main {
+  max-width: 720px;
+  margin: 40px auto;
+  padding: 28px 28px 32px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-top: 5px solid var(--gold);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(60, 40, 10, 0.10);
+}
+
+h1 { color: var(--accent); text-align: center; margin-top: 0; }
+h2, h3 { color: var(--accent); }
+
+/* Monospace so every letter and * is the same width, keeping word lengths readable */
+#verse {
+  font-family: "Courier New", monospace;
+  font-size: 1.15rem;
+  line-height: 1.8;
+  background: #faf5e9;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--gold);
+  padding: 18px;
+  border-radius: 8px;
+  min-height: 130px;
+  overflow-wrap: anywhere;
+}
+
+input, select, button {
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #cdbfa5;
+  background: #fff;
+}
+
+input:focus, select:focus, button:focus-visible {
+  outline: 3px solid rgba(31, 78, 121, 0.35);
+  outline-offset: 1px;
+}
+
+button {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  touch-action: manipulation;
+}
+button:hover { background: var(--accent-dark); }
+button:disabled { opacity: 0.45; cursor: default; }
+
+#name-input { width: 100%; max-width: 320px; margin-right: 8px; }
+
+.guess-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0 6px;
+}
+#chapter-input { width: 120px; }
+
+#chapter-hint {
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--muted);
+  margin: 0 0 14px;
+}
+
+#round-info, #score { color: var(--muted); }
+#feedback { font-weight: bold; min-height: 1.5em; }
+
+#final-score { color: var(--gold); }
+#scoreboard { padding-left: 1.5rem; }
+#scoreboard li { padding: 6px 0; border-bottom: 1px solid var(--line); }
+
+/* Phones: use the full screen width */
+@media (max-width: 600px) {
+  main { margin: 0; border-radius: 0; padding: 20px 16px 28px; }
+  .guess-row select, .guess-row input { flex: 1 1 100%; }
+  .guess-row button { flex: 1 1 45%; }
+  #chapter-input { width: auto; }
+}
+
+/* Comfortable tap targets on touch screens */
+input, select, button { min-height: 44px; }

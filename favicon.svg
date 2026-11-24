@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="12" fill="#1f4e79"/>
+  <!-- open book -->
+  <path d="M32 28 C26 24 16 24 10 26 V50 C16 48 26 48 32 52 Z" fill="#fffdf8"/>
+  <path d="M32 28 C38 24 48 24 54 26 V50 C48 48 38 48 32 52 Z" fill="#f3ede1"/>
+  <path d="M32 28 V52" stroke="#b88a2e" stroke-width="2"/>
+  <!-- gold star above the book -->
+  <polygon points="32,7 34,12.25 39.6,12.5 35.23,16.05 36.7,21.5 32,18.4 27.3,21.5 28.77,16.05 24.4,12.5 30,12.25" fill="#b88a2e"/>
+</svg>
